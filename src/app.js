@@ -412,4 +412,189 @@ const FriendshipBudgetSystem = () => {
                   <td className="p-3">{transaction.description}</td>
                   {isAdmin && (
                     <td className="p-3 text-center">
-                
+                      <button
+                        onClick={() => handleDeleteTransaction(transaction.id)}
+                        className="text-red-600 hover:text-red-800"
+                        disabled={isLoading}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderMembers = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">회원 관리</h2>
+        {renderConnectionStatus()}
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-3">이름</th>
+                <th className="text-left p-3">납부 방식</th>
+                <th className="text-left p-3">납부 기한</th>
+                <th className="text-right p-3">잔액</th>
+                <th className="text-left p-3">상태</th>
+                {isAdmin && <th className="text-center p-3">관리</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {members.map(member => (
+                <tr key={member.id} className="border-b hover:bg-gray-50">
+                  <td className="p-3 font-medium">{member.name}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-1 rounded text-xs ${
+                      member.paymentType === '일시납' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                    }`}>
+                      {member.paymentType}
+                    </span>
+                  </td>
+                  <td className="p-3">{member.paidUntil}</td>
+                  <td className={`p-3 text-right font-medium ${
+                    member.balance >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {member.balance.toLocaleString()}원
+                  </td>
+                  <td className="p-3">
+                    {member.status && (
+                      <span className="px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-800">
+                        {member.status}
+                      </span>
+                    )}
+                  </td>
+                  {isAdmin && (
+                    <td className="p-3 text-center">
+                      <button
+                        onClick={() => {
+                          const amount = prompt('납부 금액을 입력하세요:');
+                          const month = prompt('납부 월을 입력하세요 (예: 2025-09):');
+                          if (amount && month) {
+                            handlePayment(member.id, parseInt(amount), month);
+                          }
+                        }}
+                        className="text-blue-600 hover:text-blue-800 mr-2"
+                        disabled={isLoading}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center py-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">충주고등학교 교직원 친목회</h1>
+              <p className="text-sm text-gray-600">예산 관리 시스템</p>
+            </div>
+            <div className="flex items-center gap-4">
+              {isAdmin ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-green-600">관리자 모드</span>
+                  <button
+                    onClick={handleAdminLogout}
+                    className="text-sm text-red-600 hover:text-red-800"
+                  >
+                    로그아웃
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowLogin(true)}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  관리자 로그인
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {showLogin && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">관리자 로그인</h3>
+            <input
+              type="password"
+              placeholder="비밀번호"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              className="border rounded px-3 py-2 w-full mb-4"
+              onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={handleAdminLogin}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                로그인
+              </button>
+              <button
+                onClick={() => setShowLogin(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <nav className="bg-white border-t">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex space-x-8">
+            {[
+              { id: 'dashboard', name: '대시보드', icon: DollarSign },
+              { id: 'transactions', name: '거래 내역', icon: FileText },
+              { id: 'members', name: '회원 관리', icon: Users }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setCurrentTab(tab.id)}
+                className={`flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm ${
+                  currentTab === tab.id
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <tab.icon className="w-5 h-5" />
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {currentTab === 'dashboard' && renderDashboard()}
+        {currentTab === 'transactions' && renderTransactions()}
+        {currentTab === 'members' && renderMembers()}
+      </main>
+    </div>
+  );
+};
+
+export default FriendshipBudgetSystem;
