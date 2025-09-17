@@ -2,7 +2,7 @@
   "name": "chungju-friendship-budget",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://사용자명.github.io/chungju-friendship-budget",
+  "homepage": "https://etsongji.github.io/chungju-friendship-budget",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
