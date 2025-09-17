@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/chungju-friendship-budget/static/css/main.8f4c2c8f.css",
+    "main.js": "/chungju-friendship-budget/static/js/main.098fb733.js",
+    "index.html": "/chungju-friendship-budget/index.html",
+    "main.8f4c2c8f.css.map": "/chungju-friendship-budget/static/css/main.8f4c2c8f.css.map",
+    "main.098fb733.js.map": "/chungju-friendship-budget/static/js/main.098fb733.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8f4c2c8f.css",
+    "static/js/main.098fb733.js"
+  ]
+}
